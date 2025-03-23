@@ -3,9 +3,23 @@ import { addProduct } from "../api/api";
 
 const ProductForm = ({ onAddProduct }) => {
   const [form, setForm] = useState({ name: "", price: "", image: "" });
+  const [errors, setErrors] = useState({ name: false, price: false, image: false });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validation
+    let newErrors = {
+      name: !form.name.trim(),
+      price: !form.price.trim() || isNaN(form.price) || form.price <= 0,
+      image: !form.image.trim(),
+    };
+
+    setErrors(newErrors);
+
+    // If there are errors, return early
+    if (Object.values(newErrors).some((error) => error)) return;
+
     await addProduct(form);
     setForm({ name: "", price: "", image: "" });
     onAddProduct();
@@ -20,25 +34,37 @@ const ProductForm = ({ onAddProduct }) => {
           placeholder="Product Name"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="p-3 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={`p-3 rounded-md focus:outline-none focus:ring-2 ${
+            errors.name ? "bg-red-500 ring-red-500" : "bg-gray-500 focus:ring-blue-500"
+          } text-white`}
         />
+        {errors.name && <p className="text-red-500 text-sm">Product name is required</p>}
+
         <input
           type="number"
           placeholder="Price"
           value={form.price}
           onChange={(e) => setForm({ ...form, price: e.target.value })}
-          className="p-3 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={`p-3 rounded-md focus:outline-none focus:ring-2 ${
+            errors.price ? "bg-red-500 ring-red-500" : "bg-gray-500 focus:ring-blue-500"
+          } text-white`}
         />
+        {errors.price && <p className="text-red-500 text-sm">Enter a valid price</p>}
+
         <input
           type="text"
           placeholder="Image URL"
           value={form.image}
           onChange={(e) => setForm({ ...form, image: e.target.value })}
-          className="p-3 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={`p-3 rounded-md focus:outline-none focus:ring-2 ${
+            errors.image ? "bg-red-500 ring-red-500" : "bg-gray-500 focus:ring-blue-500"
+          } text-white`}
         />
+        {errors.image && <p className="text-red-500 text-sm">Image URL is required</p>}
+
         <button
           type="submit"
-          className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-all"
+          className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-500 transition-all"
         >
           Add Product
         </button>

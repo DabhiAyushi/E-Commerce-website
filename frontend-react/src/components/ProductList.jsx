@@ -8,9 +8,24 @@ const ProductList = ({ products, onDeleteProduct, onAddToCart }) => {
   };
 
   const handleAddToCart = async (id) => {
-    await addToCart(id);
-    onAddToCart();
+    if (!id) {
+      console.error("❌ Error: Product ID is undefined or null");
+      return;
+    }
+  
+    console.log(`⏳ Waiting 100ms before adding product ${id} to cart...`);
+    
+    setTimeout(async () => {
+      try {
+        await addToCart(id);
+        console.log(`✅ Success: Product ${id} added to cart`);
+        onAddToCart();
+      } catch (error) {
+        console.error("❌ Failed to add to cart:", error.response?.data || error.message);
+      }
+    }, 100);
   };
+  
 
   return (
     <div className="my-8">

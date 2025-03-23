@@ -7,6 +7,9 @@ const Cart = ({ cart, onRemoveFromCart }) => {
     onRemoveFromCart();
   };
 
+  // ✅ Calculate total cart price
+  const totalPrice = cart.reduce((acc, item) => acc + (item.price || 0), 0);
+
   return (
     <div className="my-8 bg-gray-800 p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-semibold text-center text-white mb-6">Shopping Cart</h2>
